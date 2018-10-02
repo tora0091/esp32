@@ -2,8 +2,7 @@
 - https://randomnerdtutorials.com/
 
 
-# esp32 Test program
-
+# Environment
 - esp-wroon-32 devkit
 - Arduino IDE 1.8.7
 - ubuntu 16.04
