@@ -1,5 +1,5 @@
-# Random Nerd Tutorials
-- https://randomnerdtutorials.com/
+# ESP32
+- Reference: Random Nerd Tutorials(https://randomnerdtutorials.com/)
 
 # Environment
 - esp-wroon-32 devkit
