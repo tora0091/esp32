@@ -1,7 +1,7 @@
 #include "BLEDevice.h"
 
-static BLEUUID serviceUUID("C6FBDD3C-7123-4C9E-86AB-005F1A7EDA01");
-static BLEUUID    charUUID("B88E098B-E464-4B54-B827-79EB2B150A9F");
+static BLEUUID serviceUUID("c6fbdd3c-7123-4c9e-86ab-005f1a7eda01");
+static BLEUUID    charUUID("b88e098b-e464-4b54-b827-79eb2b150a9f");
 
 static BLEAddress *pServerAddress;
 static boolean doConnect = false;
@@ -14,6 +14,11 @@ const int backPin = 16;
 const int leftTurnPin = 17;
 const int rightTurnPin = 5;
 const int brakePin = 18;
+
+int goPinState = LOW;
+int backPinState = LOW;
+int leftTurnPinState = LOW;
+int rightTurnPinState = LOW;
 
 String controlMode = "BR";
 
@@ -49,12 +54,12 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     Serial.print("BLE Advertised Device found: ");
     Serial.println(advertisedDevice.toString().c_str());
 
-    if (advertisedDevice.haveServiceUUID() && advertisedDevice.getServiceUUID().equals(serviceUUID)) {
+//    if (advertisedDevice.haveServiceUUID() && advertisedDevice.getServiceUUID().equals(serviceUUID)) {
       Serial.print("Found our device!  address: "); 
       advertisedDevice.getScan()->stop();
       pServerAddress = new BLEAddress(advertisedDevice.getAddress());
       doConnect = true;
-    }
+//    }
   }
 };
 
@@ -90,18 +95,31 @@ void loop() {
   }
 
   if (connected) {
-    if (goPin == HIGH) {
+    Serial.print("Control Mode : ");
+
+    goPinState = digitalRead(goPin);
+    backPinState = digitalRead(backPin);
+    leftTurnPinState = digitalRead(leftTurnPin);
+    rightTurnPinState = digitalRead(rightTurnPin);
+    
+    if (goPinState == HIGH) {
+      Serial.println("GO");
       controlMode = "GO";
-    } else if (backPin == HIGH) {
+    } else if (backPinState == HIGH) {
+      Serial.println("BK");
       controlMode = "BK";
-    } else if (leftTurnPin == HIGH) {
+    } else if (leftTurnPinState == HIGH) {
+      Serial.println("LT");
       controlMode = "LT";
-    } else if (rightTurnPin == HIGH) {
+    } else if (rightTurnPinState == HIGH) {
+      Serial.println("RT");
       controlMode = "RT";
     } else {
       // break or nothing
+      Serial.println("BR");
       controlMode = "BR";
     }
+    Serial.println(controlMode);
     pRemoteCharacteristic->writeValue(controlMode.c_str(), controlMode.length());
   }
   delay(500);
